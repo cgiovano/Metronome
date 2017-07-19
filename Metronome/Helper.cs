@@ -2,7 +2,7 @@
 {
     class Helper
     {
-        static BackgroundMetronome.Metronome metronome = new BackgroundMetronome.Metronome();
+        static Metronome metronome = new Metronome();
 
         public static int bpm;
         public static bool metronomeIsActive;

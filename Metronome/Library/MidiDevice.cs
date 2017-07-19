@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Midi;
 
-namespace BackgroundMetronome
+namespace Metronome
 {
     class MidiDevice
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml;
 
-namespace BackgroundMetronome
+namespace Metronome
 {
     public sealed class Metronome
     {

@@ -2,7 +2,7 @@
 using Windows.Devices.Enumeration;
 using Windows.Devices.Midi;
 
-namespace BackgroundMetronome
+namespace Metronome
 {
     public class MidiDeviceSelector
     {
