@@ -1,0 +1,10 @@
+﻿{
+  "bpm": 30,
+  "uc": 4,
+  "ut": 4,
+  "dt": 1,
+  "theme": "Dark",
+  "simplemode": true,
+  "firstbeat": true,
+  "tempodivisionbeat": true
+}
