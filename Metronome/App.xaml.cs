@@ -12,7 +12,6 @@ namespace Metronome
     /// </summary>
     sealed partial class Application : Windows.UI.Xaml.Application
     {
-        ExtendedTask extTask = new ExtendedTask();
         /// <summary>
         /// Inicializa o objeto singleton do aplicativo.  Esta é a primeira linha de código criado
         /// executado e, como tal, é o equivalente lógico de main() ou WinMain().
@@ -21,19 +20,6 @@ namespace Metronome
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-
-            this.Suspending += Application_Suspending;
-            this.Resuming += Application_Resuming;
-        }
-
-        private void Application_Resuming(object sender, object e)
-        {
-            extTask.EndExtendedExecution();
-        }
-
-        private void Application_Suspending(object sender, SuspendingEventArgs e)
-        {
-            extTask.BeginExtendExecution();
         }
 
         /// <summary>
@@ -96,17 +82,9 @@ namespace Metronome
         /// <param name="e">Detalhes sobre a solicitação de suspensão.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            //ExtendedTask extendedTask = new ExtendedTask();
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Salvar o estado do aplicativo e parar qualquer atividade em segundo plano 
             deferral.Complete();
         }
-
-        /*protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
-        {
-            base.OnBackgroundActivated(args);
-            ExtendedTask extTask = new ExtendedTask();
-            //extTask.BeginExtendExecution();
-        }*/
     }
 }

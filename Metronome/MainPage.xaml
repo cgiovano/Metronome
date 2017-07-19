@@ -13,6 +13,7 @@
                 <Grid Grid.Row="1" Padding="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
@@ -39,8 +40,10 @@
                                    HorizontalAlignment="Right"/>
                     </Grid>
 
+                    <TextBlock Grid.Row="1" Name="DisplayProgress"></TextBlock>
+
                     <Button Name="StartButton"
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Padding="10"
                             Content="Start"
                             HorizontalAlignment="Center"

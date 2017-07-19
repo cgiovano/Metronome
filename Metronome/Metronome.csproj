@@ -95,10 +95,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ExtendedTask.cs" />
-    <Compile Include="Helper.cs" />
     <Compile Include="Library\AudioPlayback.cs" />
-    <Compile Include="Library\Metronome.cs" />
     <Compile Include="Library\MidiDevice.cs" />
     <Compile Include="Library\MidiDeviceSelector.cs" />
     <Compile Include="MainPage.xaml.cs">

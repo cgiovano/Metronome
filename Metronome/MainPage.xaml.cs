@@ -1,6 +1,10 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.ApplicationModel.ExtendedExecution;
+using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.ApplicationModel;
+using Windows.UI.Core;
 
 // O modelo de item de Página em Branco está documentado em https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x416
 
@@ -11,41 +15,36 @@ namespace Metronome
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        MidiDeviceSelector deviceSelector = new MidiDeviceSelector();
+        System.Threading.Timer periodicTimer = null;
+        int interval;
+        bool isActive = false;
+
         public MainPage()
         {
             this.InitializeComponent();
         }
 
         private void BpmSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
-        {
-            try
-            {
-                Helper.Stop();
-                StartButton.Content = "Start";
-            }
-            catch { }
-
-            Helper.bpm = (int)BpmSlider.Value;
+        {   
             ShowBpm.Text = BpmSlider.Value.ToString() + " bpm";
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Helper.metronomeIsActive == false)
+            if (isActive == false)
             {
-                //Helper.Start();
-                //BeginExtendExecution();
-                Helper.Start();
+                interval = 60000 / ((int)BpmSlider.Value);
+                BeginExtendExecution();
                 StartButton.Content = "Stop";
             }
             else
             {
-                Helper.Stop();
+                EndExtendedExecution();
                 StartButton.Content = "Start";
             }
         }
 
-        /*
         //
         // Extended Execution
         //
@@ -58,9 +57,16 @@ namespace Metronome
         {
             if (session != null)
             {
-                session.Revoked -= SessionRevoked;
+                session.Revoked -= SessionRevokedAsync;
                 session.Dispose();
                 session = null;
+            }
+
+            if (periodicTimer != null)
+            {
+                isActive = false;
+                periodicTimer.Dispose();
+                periodicTimer = null;
             }
         }
 
@@ -71,38 +77,39 @@ namespace Metronome
         {
             ClearExtendedExecution();
 
-            ExtendedExecutionSession newSession = new ExtendedExecutionSession();
-            newSession.Reason = ExtendedExecutionReason.Unspecified;
-            newSession.Description = "Run the metronome in background";
-            newSession.Revoked += SessionRevoked;
-            ExtendedExecutionResult result = await newSession.RequestExtensionAsync();
-
-            switch (result)
+            using (var session = new ExtendedExecutionSession())
             {
-                case (ExtendedExecutionResult.Allowed):
-                    session = newSession;
-                    Helper.Start();
-                    break;
+                session.Reason = ExtendedExecutionReason.Unspecified;
+                session.Description = "Run the metronome in background";
+                session.Revoked += SessionRevokedAsync;
+                ExtendedExecutionResult result = await session.RequestExtensionAsync();
 
-                default:
-                case (ExtendedExecutionResult.Denied):
-                    newSession.Dispose();
-                    break;
+                if (result == ExtendedExecutionResult.Denied)
+                {
+                    return;
+                }
+
+                periodicTimer = new System.Threading.Timer(PlaySound, null, 0, interval);
+                isActive = true;
             }
         }
 
-        void EndExtendedExecution()
+        void PlaySound(object state)
+        {
+            AudioPlayback.Beep1();
+        }
+
+        public void EndExtendedExecution()
         {
             ClearExtendedExecution();
         }
 
-        private async void SessionRevoked(object sender, ExtendedExecutionRevokedEventArgs args)
+        private async void SessionRevokedAsync(object sender, ExtendedExecutionRevokedEventArgs args)
         {
             //
-            // Notify the user that the session was revoked
+            // Notify the user that the session was revoked. Operation do redo/clode the resource?
             //
-            //EndExtendedExecution();
-            //BeginExtendExecution();
-        }*/
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => { EndExtendedExecution(); });
+        }
     }
 }
